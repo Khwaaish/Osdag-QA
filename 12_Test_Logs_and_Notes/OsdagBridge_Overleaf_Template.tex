@@ -1,0 +1,199 @@
+% OsdagBridge Internship QA Report - Overleaf starter
+% Compile with pdfLaTeX. Replace TODOs and attach/insert evidence figures.
+\documentclass[11pt,a4paper]{report}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{enumitem}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\setlength{\parskip}{5pt}
+\renewcommand{\arraystretch}{1.2}
+
+\title{\textbf{OsdagBridge Software Testing and QA Report}\\
+\large Short-Span Steel Girder Bridge Module}
+\author{TODO: Your name}
+\date{TODO: Date}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Introduction}
+\section{Problem Statement}
+OsdagBridge's short-span steel girder bridge module requires functional testing across design scenarios, material customization, consecutive runs, UI responsiveness, data integrity, and report/output consistency.
+
+\section{Objectives}
+\begin{itemize}
+\item Test basic and additional input behavior and validation.
+\item Verify custom steel and concrete property entry and propagation.
+\item Examine consecutive runs and state persistence.
+\item Compare UI inputs, Input Dictionary, Output Dictionary, results docks, plots/CAD, and reports.
+\item Record successful and failed test cases with parameter values and evidence.
+\item Report anomalies and cross-check GitHub issues to avoid duplicates.
+\end{itemize}
+
+\section{Scope and Limitations}
+Describe only tests actually performed. Distinguish manual GUI observations, isolated automated/source checks, repository issue references, and unverified hypotheses. Software observations are not independent certification of structural calculations.
+
+\chapter{Environment and Setup}
+\begin{itemize}
+\item Repository/fork: \url{https://github.com/Nidhikhare12/OsdagBridge}
+\item Branch: \texttt{dev}
+\item Environment: Conda \texttt{osdagbridge-env}
+\item Python: 3.12.x (record exact version if available)
+\item Launch command: \texttt{python -m osdagbridge.desktop}
+\item OS: TODO
+\end{itemize}
+Add setup/launch screenshots or terminal evidence as appropriate.
+
+\chapter{Test Methodology and Coverage}
+Summarize test strategy and coverage: UI/basic inputs, additional inputs, validation boundaries, median, footpath, repeated span designs, custom materials, components, results/dictionaries, plots/CAD, reports, save/load, robustness, and source-level checks.
+\section{Summary Statistics}
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.35\textwidth}@{}}
+\toprule
+Category & Tests Executed & Outcome \\
+\midrule
+Environment \& Setup & 4 & 3 PASS, 1 partial \\
+UI \& Basic Inputs & 12 & 5 PASS, 7 partial \\
+Custom Materials & 10 & 4 PASS, 1 FAIL, 5 partial \\
+Design \& Backend & 12 & 4 PASS, 8 partial \\
+Data / Dictionary & 7 & 2 PASS, 5 partial \\
+CAD \& Graphical Output & 8 & 2 PASS, 2 FAIL, 4 partial \\
+Report QA & 8 & 3 PASS, 2 FAIL, 3 partial \\
+.osi Serialization & 13 (automated) & Mixed -- see validator section \\
+\midrule
+Total issues raised / reproduced & \multicolumn{2}{c}{10+ defects identified} \\
+\bottomrule
+\end{tabularx}
+\caption{Recorded summary of test coverage and outcomes.}
+\end{table}
+
+\section{Test Evidence Convention}
+For each test, include ID, parameter combination, steps, expected result, actual result, PASS/FAIL/OBSERVATION, and evidence filename. Do not label source-only or synthetic tests as GUI/end-to-end tests.
+
+\chapter{Basic Inputs and Additional Inputs}
+\section{Basic Input Inventory}
+TODO: Table of field, observed value/default, unit, test coverage, and notes.
+\section{Additional Input Inventory}
+TODO: Include seismic, wind, temperature, load combinations, analysis/design options, material factors, and selected ULS/SLS checks.
+\section{Boundary and Invalid Input Tests}
+TODO: Add exact test matrix and observed accept/reject behavior.
+
+\chapter{Scenario Testing}
+\section{Median ON/OFF}
+Recorded median properties: width 1.2 m, height 0.9 m, area 0.5632 m$^2$, density 25 kN/m$^3$, load 14.08 kN/m.
+Recorded geometry/load response:
+\begin{itemize}
+\item Median ON: overall width 20.10 m, girder spacing 5.03 m, overhang 2.51 m, four girders.
+\item Dead load recorded: 51.276 kN/m ON vs 28.631 kN/m OFF.
+\item Recorded comparison: SW moment approximately 230 kNm; DD moment 2525 kNm and shear 554 kN ON vs 1251.74 kNm and 220.31 kN OFF.
+\end{itemize}
+Insert the supporting screenshots and explain limits of the comparison.
+
+\section{Footpath Both Sides}
+Recorded: 1.5 m each side, four girders, spacing 3.36 m, overhang 1.68 m, overall width 13.45 m. Permanent load recorded as 38.592 kN/m vs 28.631 kN/m without footpaths. TODO: insert evidence.
+
+\section{Repeat Span Consistency}
+Recorded 31 m vs 32 m: width 13.45 vs 13.65 m; spacing 3.36 vs 3.41 m; overhang 1.68 vs 1.71 m; DL 38.592 vs 39.17 kN/m. TODO: include run screenshots and comparison.
+
+\chapter{Custom Materials and Component Coverage}
+\section{Custom Steel}
+Recorded custom steel propagation: \texttt{custom\_steel\_520\_410} reached tested girder and stiffener paths. Add material-entry screenshots and relevant component/output evidence.
+\section{Material Relationship Check}
+Recorded E=200 GPa and $\nu=0.3$ gave G about 76.9 GPa; using G=70 GPa yielded E about 182 GPa.
+\section{Precision Limitation}
+Poisson ratio and thermal expansion fields were observed to accept only one decimal place. Cross-check with existing issue reference \#76.
+\section{Custom Concrete and Other Steel Components}
+TODO: Insert recorded custom concrete/deck evidence and clearly label isolated backend mapping tests separately from runtime GUI tests. Mention cross-bracing and end-diaphragm mapping evidence with scope.
+
+\chapter{Multi-Run, Persistence, and State}
+\section{Self-Weight Sensitivity RUN-05}
+\begin{longtable}{p{0.2\textwidth}p{0.3\textwidth}p{0.4\textwidth}}
+\toprule Factor & Permanent Load Summary & SW Maximum Moments (kNm)\\\midrule
+1.00 & 28.487 kN/m & G1 205.44; G2 204.96; G3 204.96; G4 205.44\\
+1.10 & 28.761 kN/m & G1 205.44; G2 204.96; G3 204.96; G4 205.44\\
+\bottomrule
+\end{longtable}
+\textbf{Outcome: FAIL -- Output Consistency.} The permanent load summary changed, but reported SW moments remained identical. This demonstrates a recorded output inconsistency; it does not independently prove the structural calculation is incorrect. Insert comparison screenshots and notes.
+
+\section{Girder Spacing Persistence}
+Recorded: changed spacing from 2.60 m to 2.70 m, saved and reopened Additional Inputs; value reverted to 2.60 m. Deck thickness (270 mm) and self-weight factor (1.10) persisted; location was retained. Outcome: FAIL, reproduced per notes. Insert evidence.
+
+\section{Location State Mismatch}
+Recorded baseline .osi location Panjim, Goa; Basic Inputs later showed \textit{Select Location} while design/report retained Panjim. Insert screenshots and discuss state inconsistency.
+
+\section{Three-Run Requirement}
+TODO: Do not claim a full 3-run sequence unless all three runs are evidenced. Summarize available repeat-span tests and other recorded run comparisons, and describe what screenshots/dictionary snapshots support.
+
+\chapter{Outputs, Dictionaries, CAD, and Plots}
+\section{Analysis Results}
+Recorded reaction fields: $R_A=36.11$ kN and $R_B=26.02$ kN; plot labels appeared as 36.1 kN at both ends. Cross-check existing issue reference \#73.
+\section{Results Table}
+All four girder rows were inspected. Girder section property values around 1.78 were displayed with mm label, while values appeared to be in metres; cross-check issue reference \#66.
+\section{Design Check Summary}
+Recorded UI: 8 checks, 6 passed, 0 failed, overall PASS, but only six cards visible. Include screenshot.
+\section{Plots and CAD}
+Describe CAD geometry for baseline, median, footpath and repeat runs. List unresponsive Graphics menu actions observed: Show Front View, Show Top View, Show Side View, Rotate 3D Model (Ctrl+R). Insert evidence.
+\section{Dictionary Comparison}
+TODO: Add side-by-side UI/Input Dictionary/Output Dictionary/Output Dock/report comparisons for recorded runs. Do not infer missing values.
+
+\chapter{Report Verification}
+Report artifact referenced: \texttt{run\_03\_design\_report.pdf}; 57 physical pages, printed numbering ended at 56. PDF generation/export PASS.
+\begin{longtable}{p{0.12\textwidth}p{0.64\textwidth}p{0.16\textwidth}}
+\toprule ID & Finding & Status\\\midrule
+REP-F01 & Key Design Outcomes says girder design PASS despite fatigue and total-load deflection failures in detail (pp. 5, 32--33). & FAIL\\
+REP-F02 & Girder dimensions labelled mm but values appear in metres (e.g. 1.73, 0.01, 0.52) (p. 9). & FAIL\\
+REP-F03 & Support reaction table blank while reactions available elsewhere (p. 20). & FAIL\\
+REP-F04 & Overall bridge width displayed as 9.899999999999999 (p. 8). & FAIL\\
+REP-F05 & Some wind/seismic fields blank or unclear (pp. 16--17); applicability needs verification. & INVESTIGATE\\
+REP-F06 & Physical PDF has 57 pages while printed numbering ends at 56. & OBSERVATION\\
+\bottomrule
+\end{longtable}
+Detailed recorded failures: fatigue utilization 1.65--1.70; total-load deflection 56.06--56.28 mm versus 51.67 mm allowable. Treat these as report observations, not independently validated calculations.
+
+\chapter{Focused Automated and Source-Level QA}
+\section{.osi Validator Matrix}
+TODO: Insert the 13-case matrix from the QA workbook, with exact outcomes.
+\section{Serialization and Restoration}
+Recorded isolated YAML round-trip retained fields, boolean, float, and unknown nested key. Synthetic InputDock test restored line-edit/combo values and retained dictionary keys without widgets; checkbox was not tested.
+\section{Status and Resolver Tests}
+Recorded controlled aggregation: all pass $\rightarrow$ PASS; one fail or mixed $\rightarrow$ FAIL; only excluded check ID 20 $\rightarrow$ ``NO CHECKS RUN''. Design envelope controlled failing case returned FAIL. Synthetic two-girder result resolver preserved G1/G2 mapping and two-decimal formatting.
+\section{Custom Material Mapping}
+Isolated backend mapping used custom steel/concrete properties and survived YAML serialization. Do not describe as full GUI persistence.
+\section{Validation Gate Inconsistency}
+The .osi validator rejected a nonnumeric custom wind drag coefficient, while backend \texttt{\_validate\_inputs} accepted it after \texttt{set\_input}. Downstream calculation impact was not verified.
+\section{Reset Source Audit}
+Database $\rightarrow$ Reset action exists, but no handler connection was found in source. This is source-confirmed; runtime behavior was not verified.
+
+\chapter{Failure and Issue Summary}
+TODO: Copy final issue tracker entries from the QA workbook. For each, provide trigger, expected, actual, impact, evidence, existing issue cross-check, and proposed fix/source area if confirmed.
+\section{Confirmed Runtime/UI Findings}
+Include self-weight output mismatch, CSV menu unresponsiveness, graphics menu unresponsiveness, location state mismatch, girder spacing persistence, reaction plot label mismatch, report inconsistencies, and custom-material precision limitation.
+\section{Source/Isolated Findings}
+Separate Reset handler absence, .osi validation permissiveness, backend validator mismatch, synthetic executive-summary status behavior, and stale-output dependency risk. Clearly label unverified runtime impact.
+
+\chapter{GitHub Issue References}
+TODO: Use the GitHub Issues tab. For each link, verify it belongs to the target fork and is current. Include screenshots of the issue page and status. The selected four issue references were previously listed as \#436, \#438, \#414, and \#407; ownership/link validity was not verified in the recorded notes. Do not claim these were personally reproduced.
+\section{Issues Raised by This Testing}
+TODO: Add only issues actually submitted. Draft references noted: \#62842 (CSV actions), \#62841 (load case vs permanent-load summary), and \#82641 (location state). Submission status was not confirmed in the recorded context.
+
+\chapter{Conclusion}
+Summarize the strongest PASS tests, confirmed FAIL discrepancies, source/isolated checks, and remaining verification needs. Avoid claiming exhaustive coverage beyond evidence available. Emphasize that the work evaluates software behavior, consistency, and traceability; it is not a structural design certification.
+
+\appendix
+\chapter{Evidence Index}
+TODO: Use the Evidence Inventory tab to map each figure/table to filename, test ID, and report section. Only insert files that exist and have been checked.
+\chapter{GitHub Issue Screenshots}
+TODO: Insert issue-page screenshots with issue number/title, repository, current status and URL visible.
+\chapter{Additional Test Data}
+TODO: Attach or reference .osi copies, logs, dictionaries, exported tables and supplementary notes.
+
+\end{document}
