@@ -1,47 +1,73 @@
 # OsdagBridge — Software QA & Testing
 
-This repository documents software quality assurance and testing activities conducted on OsdagBridge, a steel bridge design application. It contains manual GUI test evidence, test inputs, reports, notes, and documented anomalies.
+This repository is a documented software QA record for the **OsdagBridge short-span steel girder bridge module**. It contains manual GUI observations, scenario comparisons, persistence checks, source-level and synthetic findings, report review, and the supporting evidence files available in this workspace. No OsdagBridge source code was developed or modified as part of this QA work.
 
-## Testing scope
+## Contents
 
-- UI behavior and input validation, including boundary values
-- Structural design scenarios and repeated design runs
-- Custom material configuration and propagation
-- Input and output data checks, including `.osi` state restoration
-- CAD and visualization controls
-- PDF report and CSV export behavior
-- Defect observations and supporting evidence
+- [QA overview](QA_Overview.md) · [Methodology](TESTING_METHODOLOGY.md) · [Environment](ENVIRONMENT.md)
+- [Execution summary](TEST_EXECUTION_SUMMARY.md) · [Status legend](TEST_STATUS_LEGEND.md) · [Final assessment](FINAL_QA_ASSESSMENT.md)
+- [Evidence index](EVIDENCE_INDEX.md) · [Issue tracker](ISSUE_TRACKER.md) · [Limitations](LIMITATIONS.md)
 
-## Approach and environment
+## Project under test
 
-Testing used manual execution through the application GUI, controlled input changes, output comparisons, report inspection, and targeted source-level verification.
+OsdagBridge is a desktop application for short-span steel girder bridge design. The QA scope covered inputs and validation, geometry and design scenarios, custom materials, state and `.osi` persistence, result display and traceability, CAD/graphics controls, CSV menu actions, and report generation.
 
-- OS: Windows
-- Python: 3.12
-- Environment: Conda
-- Branch tested: `dev`
+## Testing approach and environment
 
-## Findings summary
+Testing combined manual GUI activity, controlled input changes, cross-scenario comparisons, report inspection, source inspection, and targeted synthetic/offscreen checks. Test conclusions distinguish these methods; synthetic checks are not full end-to-end application calculations.
 
-The recorded work examined input validation and boundary behavior, custom material handling, repeated design and `.osi` state restoration, CSV export actions, report consistency, and visualization controls. Reported anomalies include state inconsistencies, unresponsive CSV export actions, and report/output consistency concerns. See the evidence and notes before treating any observation as a confirmed defect; archived screenshots are not all mapped to a specific test.
-
-## Repository contents
-
-| Path | Contents |
+| Item | Recorded environment |
 | --- | --- |
-| `00_START_HERE/` | Package notes and starting guidance |
-| `04_Custom_Materials/` | Custom material test evidence |
-| `08_Reports/` | PDF reports and report screenshots |
-| `09_Anomalies_and_Failures/` | Evidence associated with anomalies and failures |
-| `11_Test_Inputs_OSI/` | `.osi` test inputs |
-| `12_Test_Logs_and_Notes/` | QA workbook and run logs |
-| `13_Screenshot_Archive/` | Preserved screenshot archive; filenames retained |
-| `QA Evidence/` | Additional state and reset evidence |
+| Operating system | Windows |
+| Python | 3.12 |
+| Environment manager | Conda; environment name `osdagbridge-env` |
+| Tested branch | `dev` |
+| Application launch command | `conda activate osdagbridge-env`, then `python -m osdagbridge.desktop` from the OsdagBridge source checkout |
+| Source changes by tester | None |
 
-## Limitations
+## Execution snapshot
 
-Testing was primarily manual GUI testing with targeted source-level checks. No comprehensive pytest suite was authored or executed. No independent structural engineering validation was performed. This repository is a software QA record, not a certification of structural design correctness.
+The documentation registry contains **79 unique test records** across runtime, source/synthetic, and input-validator categories. Status totals are reported without combining these different testing types into a pass rate.
 
-## Evidence handling
+| Status | Count |
+|---|---|
+| PASS | 30 |
+| FAIL | 16 |
+| PARTIAL | 26 |
+| NEEDS INVESTIGATION | 6 |
+| NOT TESTED | 1 |
 
-Evidence status should be described as **Manual observed**, **Automated or source check**, or **Potential / needs investigation** as appropriate. The archive is preserved as received; presence of a file does not imply it has been reviewed or linked to a test case.
+These counts summarize documented records, not structural-design correctness or comprehensive product coverage. See [TEST_EXECUTION_SUMMARY.md](TEST_EXECUTION_SUMMARY.md) for category totals and the counting rule.
+
+## Key findings
+
+- `.osi` restoration did not retain the tested 2.70 m girder spacing; it returned as 2.60 m after save and reopen.
+- Changing the self-weight factor from 1.00 to 1.10 changed the permanent load summary from 28.487 to 28.761 kN/m while the recorded SW moments remained unchanged. This is a consistency concern, not proof of an incorrect structural calculation.
+- Save Inputs produced no dialog; source inspection found menu action creation without a connected trigger. Save Outputs runtime behavior was not tested.
+- Four graphics actions were recorded as unresponsive.
+- The QA notes record several report and summary inconsistencies. The included report copy itself says “Overall Design Status Fail”; therefore the specific PASS-versus-FAIL summary observation needs run/copy reconciliation.
+- The reaction fields and plot labels were inconsistent in the recorded observation. The exact issue scope and underlying value need investigation.
+
+## Coverage navigation
+
+| Area | Documentation |
+| --- | --- |
+| UI, inputs and validation | [01_UI_and_Input_Testing](01_UI_and_Input_Testing/README.md) |
+| Design scenarios | [02_Design_Scenario_Testing](02_Design_Scenario_Testing/README.md) |
+| Custom materials | [03_Custom_Material_Testing](03_Custom_Material_Testing/README.md) |
+| Save/load and state | [04_Save_Load_and_State](04_Save_Load_and_State/README.md) |
+| Input/output data | [05_Input_Output_Data_Validation](05_Input_Output_Data_Validation/README.md) |
+| CAD and visualization | [06_CAD_and_Visualization](06_CAD_and_Visualization/README.md) |
+| Report QA | [07_Report_QA](07_Report_QA/README.md) |
+| CSV and menu actions | [08_CSV_and_Menu_Functionality](08_CSV_and_Menu_Functionality/README.md) |
+| Source-level QA | [09_Source_Level_QA](09_Source_Level_QA/README.md) |
+| Defects and issue references | [10_Defects_and_Issue_Tracking](10_Defects_and_Issue_Tracking/README.md) |
+| Test inputs, evidence and appendices | [11_Test_Inputs](11_Test_Inputs/README.md) · [12_Evidence](12_Evidence/README.md) · [13_Appendices](13_Appendices/README.md) |
+
+## Evidence policy
+
+Evidence links point only to files present in the repository. The screenshot archive contains generically named files that are not all mapped to a test. One file in `QA Evidence/` with a `.png` extension could not be decoded as PNG; it is indexed as unreadable and should be replaced only if an original capture is available. Exact duplicate copies from the intake package were removed from the current tree; earlier copies remain recoverable in Git history.
+
+## Limitations and conclusion
+
+Testing was primarily manual GUI work with targeted source-level and synthetic checks. No comprehensive pytest suite was authored or run; pytest was unavailable during the recorded source QA activity. There was no independent structural engineering validation. This repository records software behavior and report observations and is not a certification of design correctness. The final assessment is [here](FINAL_QA_ASSESSMENT.md).

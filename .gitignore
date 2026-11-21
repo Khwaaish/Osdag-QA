@@ -1,0 +1,22 @@
+# Python and Conda artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.conda/
+env/
+venv/
+.venv/
+
+# Editor / operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary documentation-build inspection files
+_*.py
+_*.txt
+_contact_*.jpg
